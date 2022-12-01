@@ -1,22 +1,16 @@
 // Importer une dépendance externe (ou module):
 const express = require ('express');
-// Récupération de typeOrm
-const {DataSource} = require ("typeorm");
 // Récupération de l'entité
 const Wilder = require ('./entity/Wilder');
-
-// Définition d'une source de donnée
-const datasource = new DataSource ({
-    type: 'sqlite',
-    database: "./wildersdb.sqlite",
-    synchronize : true,
-// Chargement de la base de donnée
-    entities: [Wilder],
-});
-
+//Récupération du controller
+const wildersController = require ('./controller/wilders');
+//Récupération de la base de donnée
+const datasource = require("./db");
 // Appel du module
 const app = express();
 
+//Parser nos données en json
+app.use(express.json());
 // Mise en place d'une route
 // req correpond à la requête du client
 app.get('/hello', (req, res) => {
@@ -24,6 +18,9 @@ app.get('/hello', (req, res) => {
     // Res est la réponse transmise au serveur
     res.send ("hello");
 });
+
+//Execution de la fonction demandée par le client
+app.post('/wilders', wildersController.create);
 
 // Déclaration d'une fonction asynchrone
 async function start() {
